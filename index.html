@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F.E.A.R. — Branche de New York</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap');
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --blue: #2979ff;
+      --red: #e53935;
+      --cyan: #29b6f6;
+      --indigo: #5c8aff;
+      --bg: #0a0a0f;
+      --bg-card: rgba(255,255,255,0.015);
+      --border: rgba(255,255,255,0.06);
+      --text: #c8c8d0;
+      --text-light: #888;
+      --text-dim: #555;
+      --text-heading: #e8e8ef;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .site {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 40px;
+      background: rgba(10,10,18,0.92);
+      border-bottom: 1px solid rgba(41,121,255,0.1);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .logo-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+    }
+
+    .blue { color: var(--blue); }
+    .dot { color: #333; font-weight: 400; }
+
+    .logo-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.5rem;
+      letter-spacing: 4px;
+      color: #444;
+      margin-top: 3px;
+      text-transform: uppercase;
+    }
+
+    .logo-sep {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, transparent, rgba(41,121,255,0.2), transparent);
+    }
+
+    .logo-agency {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 2px;
+      color: #555;
+      line-height: 1.6;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .logo-agency span { color: var(--blue); font-weight: 600; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-links button {
+      background: none;
+      border: 1px solid transparent;
+      color: #555;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      padding: 8px 18px;
+      cursor: pointer;
+      letter-spacing: 1.5px;
+      border-radius: 6px;
+      transition: all 0.25s ease;
+      text-transform: uppercase;
+    }
+
+    .nav-links button:hover {
+      color: #aaa;
+      border-color: rgb(12,42,170);
+      background: rgb(12,42,89);
+    }
+
+    .nav-links button.active {
+      color: var(--blue);
+      border-color: rgba(41,121,255,0.2);
+      background: rgba(41,121,255,0.05);
+    }
+
+    .btn-rejoindre {
+      background: rgba(41,121,255,0.05) !important;
+      color: #fff !important;
+      border: none !important;
+      font-weight: 600 !important;
+      padding: 9px 22px !important;
+      border-radius: 6px !important;
+      letter-spacing: 0.5px !important;
+      transition: all 0.25s ease !important;
+    }
+	    .btn-login {
+      background: rgba(41,121,255,0.05) !important;
+      color: #fff !important;
+      border: none !important;
+      font-weight: 600 !important;
+      padding: 9px 22px !important;
+      border-radius: 6px !important;
+      letter-spacing: 0.5px !important;
+      transition: all 0.25s ease !important;
+    }
+
+    .btn-rejoindre:hover {
+      background: rgb(12,42,89) !important;
+      box-shadow: 0 4px 20px rgba(41,121,255,0.25) !important;
+    }
+	
+    .btn-login:hover {
+      background: rgb(12,42,89) !important;
+      box-shadow: 0 4px 20px rgba(41,121,255,0.25) !important;
+    }
+	
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #00e676;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(0,230,118,0.5);
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 10px rgba(0,230,118,0.5); }
+      50% { opacity: 0.35; box-shadow: 0 0 4px rgba(0,230,118,0.2); }
+    }
+
+    /* SECTIONS */
+    section { display: none; flex: 1; }
+    section.visible { display: block; }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      padding: 100px 60px 80px;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(41,121,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(41,121,255,0.03) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(ellipse 80% 70% at 30% 50%, black, transparent);
+      -webkit-mask-image: radial-gradient(ellipse 80% 70% at 30% 50%, black, transparent);
+    }
+
+    .hero-inner {
+      position: relative;
+      max-width: 820px;
+    }
+
+    .sys-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 4px;
+      color: #444;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: 4rem;
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--text-heading);
+      margin-bottom: 18px;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-fullname {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: #444;
+      letter-spacing: 3px;
+      margin-bottom: 28px;
+    }
+
+    .mission-tags {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .mtag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      padding: 5px 14px;
+      border: 1px solid rgba(41,121,255,0.18);
+      border-radius: 4px;
+      color: var(--blue);
+      letter-spacing: 1px;
+      background: rgba(41,121,255,0.03);
+    }
+
+    .hero p {
+      max-width: 600px;
+      line-height: 1.8;
+      color: #777;
+      margin-bottom: 32px;
+      font-size: 0.92rem;
+    }
+
+    .cta-btn {
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      padding: 13px 30px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 0.88rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      letter-spacing: 0.3px;
+    }
+
+    .cta-btn:hover {
+      background: #1e6adf;
+      box-shadow: 0 4px 24px rgba(41,121,255,0.3);
+    }
+
+    /* INTRO */
+    .intro-section, .role-section, .values-section {
+      padding: 56px 60px;
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 4px;
+      color: var(--blue);
+      margin-bottom: 32px;
+      text-transform: uppercase;
+    }
+
+    .intro-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 36px;
+    }
+
+    .intro-block p {
+      line-height: 1.85;
+      color: #888;
+      font-size: 0.88rem;
+    }
+
+    .accent { color: var(--blue); font-weight: 600; }
+
+    .indep-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      background: rgba(41,121,255,0.03);
+      border: 1px solid rgba(41,121,255,0.1);
+      border-left: 3px solid rgba(41,121,255,0.4);
+      border-radius: 8px;
+      padding: 22px 26px;
+    }
+
+    .indep-icon { flex-shrink: 0; }
+    .indep-icon svg { width: 32px; height: 32px; }
+
+    .indep-text {
+      font-size: 0.8rem;
+      line-height: 1.75;
+      color: #777;
+    }
+
+    .indep-text strong { color: var(--blue); letter-spacing: 0.5px; }
+
+    /* ROLE */
+    .role-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .role-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 30px;
+      transition: border-color 0.25s ease;
+    }
+
+    .role-card:hover {
+	border-color: rgba(100,170,255,0.1); 
+    background-color: rgba(12,42,89,0.1)
+	}
+	
+    .rc-ops { border-top: 2px solid rgba(41,121,255,0.3); }
+    .rc-hier { border-top: 2px solid rgba(229,57,53,0.3); }
+
+    .rc-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 2px;
+      padding: 4px 10px;
+      border: 1px solid rgba(41,121,255,0.2);
+      border-radius: 4px;
+      color: var(--blue);
+      background: rgba(41,121,255,0.04);
+      display: inline-block;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+
+    .role-card h3 {
+      color: var(--text-heading);
+      font-size: 1.1rem;
+      margin-bottom: 14px;
+      font-weight: 700;
+    }
+
+    .role-card p {
+      line-height: 1.75;
+      color: var(--text-light);
+      font-size: 0.84rem;
+    }
+
+    .role-card p strong { color: #bbb; }
+
+    /* VALUES */
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .val-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 20px;
+      text-align: center;
+      transition: border-color 0.25s ease;
+    }
+
+    .val-block:hover { border-color: rgba(41,121,255,0.15); }
+
+    .val-icon {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--blue);
+      margin-bottom: 14px;
+      opacity: 0.8;
+    }
+
+    .val-title {
+      font-weight: 700;
+      color: var(--text-heading);
+      font-size: 0.92rem;
+      margin-bottom: 8px;
+    }
+
+    .val-desc {
+      font-size: 0.75rem;
+      color: #666;
+      line-height: 1.55;
+    }
+
+    /* SERVICES */
+    .svc-header {
+      text-align: center;
+      padding: 72px 60px 28px;
+    }
+
+    .svc-header h2 {
+      color: var(--text-heading);
+      font-size: 2.2rem;
+      margin-bottom: 14px;
+      font-weight: 800;
+    }
+
+    .svc-header p {
+      color: #777;
+      max-width: 580px;
+      margin: 0 auto;
+      font-size: 0.88rem;
+      line-height: 1.7;
+    }
+
+    .svc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 60px 72px;
+    }
+
+    .svc-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 30px;
+      transition: all 0.3s ease;
+    }
+
+    .svc-card:hover {
+      border-color: rgba(12,42,89,0.1);
+      background: rgba(12,42,89,0.1);
+    }
+
+    .c1 { border-top: 2px solid rgba(41,121,255,0.3); }
+    .c2 { border-top: 2px solid rgba(229,57,53,0.3); }
+    .c3 { border-top: 2px solid rgba(41,182,246,0.3); }
+    .c4 { border-top: 2px solid rgba(92,138,255,0.3); }
+
+    .c1:hover { border-top-color: rgba(41,121,255,0.6); }
+    .c2:hover { border-top-color: rgba(229,57,53,0.6); }
+    .c3:hover { border-top-color: rgba(41,182,246,0.6); }
+    .c4:hover { border-top-color: rgba(92,138,255,0.6); }
+
+    .svc-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .svc-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 2px;
+      color: #444;
+      text-transform: uppercase;
+    }
+
+    .fdo-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.5rem;
+      padding: 3px 9px;
+      border: 1px solid rgba(41,121,255,0.2);
+      border-radius: 4px;
+      color: var(--blue);
+      background: rgba(41,121,255,0.04);
+      letter-spacing: 1.5px;
+      white-space: nowrap;
+    }
+
+    .svc-icon { margin-bottom: 18px; }
+    .svc-icon svg { width: 38px; height: 38px; opacity: 0.85; }
+
+    .svc-card h3 {
+      color: var(--text-heading);
+      font-size: 1.08rem;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .svc-card p {
+      line-height: 1.75;
+      color: #777;
+      font-size: 0.82rem;
+      margin-bottom: 18px;
+    }
+
+    .svc-detail {
+      margin-bottom: 18px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .svc-detail-item {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: #666;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      letter-spacing: 0.5px;
+    }
+
+    .c1 .svc-detail-item::before { content: '▸ '; color: var(--blue); }
+    .c2 .svc-detail-item::before { content: '▸ '; color: var(--red); }
+    .c3 .svc-detail-item::before { content: '▸ '; color: var(--cyan); }
+    .c4 .svc-detail-item::before { content: '▸ '; color: var(--indigo); }
+
+    .svc-badge1 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      padding: 5px 12px;
+      border: 1px solid var(--blue);
+      border-radius: 4px;
+      color: var(--blue);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .svc-badge2 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      padding: 5px 12px;
+      border: 1px solid var(--red);
+      border-radius: 4px;
+      color: var(--red);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+	
+	    .svc-badge3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      padding: 5px 12px;
+      border: 1px solid var(--cyan);
+      border-radius: 4px;
+      color: var(--cyan);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+	
+	    .svc-badge4 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      padding: 5px 12px;
+      border: 1px solid var(--indigo);
+      border-radius: 4px;
+      color: var(--indigo);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+	
+    /* FOOTER */
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 40px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: #0f356f;
+      letter-spacing: 2.5px;
+      margin-top: auto;
+      text-transform: uppercase;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .values-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      nav { flex-wrap: wrap; gap: 12px; padding: 14px 20px; }
+      .logo-sep, .logo-agency { display: none; }
+      .nav-links { width: 100%; justify-content: center; flex-wrap: wrap; gap: 6px; }
+      h1 { font-size: 2.4rem; }
+      .hero { padding: 56px 24px 48px; }
+      .intro-section, .role-section, .values-section { padding: 40px 24px; }
+      .intro-grid, .role-grid { grid-template-columns: 1fr; }
+      .values-grid { grid-template-columns: 1fr 1fr; }
+      .svc-grid { grid-template-columns: 1fr; padding: 24px 24px 56px; }
+      .svc-header { padding: 48px 24px 20px; }
+      .svc-header h2 { font-size: 1.6rem; }
+      footer { flex-direction: column; gap: 8px; text-align: center; padding: 20px 24px; }
+    }
+
+    @media (max-width: 480px) {
+      nav { padding: 12px 16px; }
+      .logo-text { font-size: 1.3rem; }
+      h1 { font-size: 1.9rem; }
+      .hero { padding: 40px 16px 36px; }
+      .intro-section, .role-section, .values-section { padding: 32px 16px; }
+      .values-grid { grid-template-columns: 1fr; }
+      .svc-grid { padding: 20px 16px 48px; }
+      .svc-header { padding: 36px 16px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="site">
+
+  <nav>
+    <div class="logo">
+      <div>
+        <div class="logo-text"><span class="blue">F</span><span class="dot">.</span><span class="blue">E</span><span class="dot">.</span><span class="blue">A</span><span class="dot">.</span><span class="blue">R</span><span class="dot">.</span></div>
+        <div class="logo-sub">FIRST ENCOUNTER ASSAULT RECON</div>
+      </div>
+      <div class="logo-sep"></div>
+      <div class="logo-agency">AGENCE FÉDÉRALE INDÉPENDANTE<br><span>Branche de New York</span></div>
+    </div>
+    <div class="nav-links">
+      <button class="active" id="tab1" onclick="show('pres')">// Présentation</button>
+      <button id="tab2" onclick="show('svc')">// DÉPARTEMENTS</button>
+	  <button class="btn-rejoindre" onclick="window.location.href=('https://urlr.me/Bcanu')">Nous rejoindre ›</button>
+	  <button class="btn-login" onclick="window.location.href=('')">Login ›</button>
+    </div>
+    <div class="status-dot"></div>
+  </nav>
+
+  <section id="pres" class="visible">
+    <div class="hero">
+      <div class="grid-bg"></div>
+      <div class="hero-inner">
+        <div class="sys-label">AGENCE GOUVERNEMENTALE — BRANCHE DE NEW YORK</div>
+        <h1><span class="blue">F.E.A.R.</span><br>BRANCHE<br>NEW YORK</h1>
+        <div class="hero-fullname">First Encounter Assault Recon // New York City</div>
+        <div class="mission-tags">
+          <span class="mtag">Supervision des FDO</span>
+          <span class="mtag">Situations de crise</span>
+          <span class="mtag">New York City</span>
+        </div>
+        <p>Agence gouvernementale indépendante déployée à New York. La F.E.A.R. œuvre au respect de la Constitution et des droits de l'Homme, supervise le fonctionnement des forces de police et intervient dans les situations de crise sur le territoire new-yorkais.</p>
+        <button class="cta-btn" onclick="show('svc')">Découvrir nos missions ›</button>
+      </div>
+    </div>
+
+    <div class="intro-section">
+      <div class="section-title">// Introduction</div>
+      <div class="intro-grid">
+        <div class="intro-block">
+          <p>Le <span class="accent">F.E.A.R.</span> est une agence gouvernementale implantée dans tous les États d'Amérique. Elle œuvre au respect de la <span class="accent">Constitution et des droits de l'Homme</span>, et supervise le fonctionnement des forces de police. Dans le cadre de son déploiement à New York, l'activité principale des agents du F.E.A.R. est d'intervenir dans les <span class="accent">situations de crise</span>.</p>
+        </div>
+        <div class="intro-block">
+          <p>Le <span class="accent">F.E.A.R.</span> est constitué d'effectifs recrutés pour leur sérieux, leurs compétences, leur dévouement et leur professionnalisme. Ses agents sont considérés comme des <span class="accent">forces d'élite</span>, indépendantes de toute chaîne de commandement locale, disposant d'une autorité fédérale pleine et entière sur leur zone de déploiement.</p>
+        </div>
+      </div>
+      <div class="indep-banner">
+        <div class="indep-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#2979ff" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+          </svg>
+        </div>
+        <div class="indep-text">
+          <strong>STATUT D'INDÉPENDANCE FÉDÉRALE</strong> — Le F.E.A.R. opère en dehors de toute tutelle municipale ou étatique. Ses agents disposent d'une autorité supérieure leur permettant d'intervenir sur l'ensemble des forces de l'ordre, y compris des élus locaux, en cas d'abus de pouvoir ou de violation de la loi fédérale.
+        </div>
+      </div>
+    </div>
+
+    <div class="role-section">
+      <div class="section-title">// Le rôle de l'agence</div>
+      <div class="role-grid">
+        <div class="role-card rc-ops">
+          <span class="rc-label">Sur les opérations</span>
+          <h3>Commandement de terrain</h3>
+          <p>Sur le terrain, les agents du <strong>F.E.A.R.</strong> sont responsables du bon déroulement des opérations de police. En cas de situation grave, l'attribution des rôles clés revient au <strong>plus haut gradé du F.E.A.R.</strong> présent sur la zone d'intervention. Sa parole prime sur celle de tout autre officier local.</p>
+        </div>
+        <div class="role-card rc-hier">
+          <span class="rc-label" style="border-color:#5a1010;color:#e53935;background:rgba(120,0,0,0.07);">Dans la hiérarchie globale</span>
+          <h3>Autorité fédérale supérieure</h3>
+          <p>L'agence veille au bon fonctionnement des forces de l'ordre. Ses agents peuvent et doivent intervenir pour la <strong>résolution de conflits</strong>, la prise de <strong>mesures disciplinaires</strong>, ainsi que l'organisation de briefings, débriefings et dispatches. Le F.E.A.R. peut faire cesser les activités du maire s'il constate un <strong>abus de pouvoir</strong> ou l'instauration de lois inappropriées.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="values-section">
+      <div class="section-title">// Nos valeurs fondamentales</div>
+      <div class="values-grid">
+        <div class="val-block">
+          <div class="val-icon">01</div>
+          <div class="val-title">Sérieux</div>
+          <div class="val-desc">Chaque mission traitée avec la rigueur qu'elle mérite</div>
+        </div>
+        <div class="val-block">
+          <div class="val-icon">02</div>
+          <div class="val-title">Compétence</div>
+          <div class="val-desc">Des agents sélectionnés parmi les meilleurs profils</div>
+        </div>
+        <div class="val-block">
+          <div class="val-icon">03</div>
+          <div class="val-title">Dévouement</div>
+          <div class="val-desc">Un engagement total au service de la loi fédérale</div>
+        </div>
+        <div class="val-block">
+          <div class="val-icon">04</div>
+          <div class="val-title">Professionnalisme</div>
+          <div class="val-desc">L'excellence opérationnelle comme standard absolu</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="svc">
+    <div class="svc-header">
+      <div class="sys-label" style="text-align:center;margin-bottom:14px;">▸ MODULES OPÉRATIONNELS</div>
+      <h2>Domaines d'intervention</h2>
+      <p>Quatre unités spécialisées au service du NYPD et des unités SWAT, déployables de manière autonome ou combinée selon la nature de la mission.</p>
+    </div>
+    <div class="svc-grid">
+      <div class="svc-card c1">
+        <div class="svc-top">
+          <div class="svc-num">DÉPARTEMENT_01 // RECRUTEMENT</div>
+          <div class="fdo-tag">F.E.A.R.</div>
+        </div>
+        <div class="svc-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#2979ff" stroke-width="1.8" stroke-linecap="round">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+        </div>
+        <h3>Recrutement</h3>
+        <p>Le Pôle Recrutement a pour mission de sélectionner et d'intégrer de nouveaux membres dans l'Agence F.E.A.R. Le responsable et les membres du pôle gèrent les candidatures, mènent des entretiens et forment les recrues afin qu'elles soient prêtes à rejoindre les différentes branches de l'Agence.</p>
+        <div class="svc-detail">
+          <div class="svc-detail-item">Évaluation physique et psychologique</div>
+          <div class="svc-detail-item">Vérification des antécédents — niveau fédéral</div>
+          <div class="svc-detail-item">Habilitation fédérale obligatoire</div>
+        </div>
+        <span class="svc-badge1">Recrutement élite FDO</span>
+      </div>
+      <div class="svc-card c2">
+        <div class="svc-top">
+          <div class="svc-num">DÉPARTEMENT_02 // RENSEIGNEMENT</div>
+          <div class="fdo-tag" style="border-color:#5a1010;color:#e53935;background:rgba(120,0,0,0.07);">F.E.A.R.</div>
+        </div>
+        <div class="svc-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#e53935" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            <path d="M8 11h6M11 8v6"/>
+          </svg>
+        </div>
+        <h3>Renseignement</h3>
+        <p>Le Service Renseignement constitue une branche spécialisée de l'agence du F.E.A.R., dédiée à la collecte d'informations et à la conduite d'enquêtes approfondies. Infiltration et démantèlement des réseaux de trafic de drogues, d'armes et de personnes opérant sur le territoire new-yorkais. Nos agents sous couverture cartographient et neutralisent les organisations criminelles de l'intérieur.</p>
+        <div class="svc-detail">
+          <div class="svc-detail-item">Opérations sous couverture longue durée</div>
+          <div class="svc-detail-item">Cartographie des réseaux criminels</div>
+          <div class="svc-detail-item">Coordination interagences nationale</div>
+        </div>
+        <span class="svc-badge2">Opération terrain</span>
+      </div>
+      <div class="svc-card c3">
+        <div class="svc-top">
+          <div class="svc-num">DÉPARTEMENT_03 // JURIDIQUE</div>
+          <div class="fdo-tag" style="border-color:#0a2a40;color:#29b6f6;background:rgba(30,120,180,0.07);">N.Y.P.D. · S.W.A.T.</div>
+        </div>
+        <div class="svc-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#29b6f6" stroke-width="1.8" stroke-linecap="round">
+            <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7L12 2z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <h3>Juridique</h3>
+        <p>Défense exclusive des agents du NYPD et des unités SWAT devant les juridictions civiles, pénales et fédérales. Usage de la force contesté, mise en cause professionnelle — nous défendons chaque agent avec toute la rigueur du droit fédéral.</p>
+        <div class="svc-detail">
+          <div class="svc-detail-item">Représentation devant toutes les juridictions</div>
+          <div class="svc-detail-item">Défense en cas d'usage de la force</div>
+          <div class="svc-detail-item">Protection et immunité statutaire des agents</div>
+        </div>
+        <span class="svc-badge3">Défense FDO — Droit fédéral</span>
+      </div>
+      <div class="svc-card c4">
+        <div class="svc-top">
+          <div class="svc-num">DÉPARTEMENT_04 // FORMATION</div>
+          <div class="fdo-tag" style="border-color:#121d40;color:#5c8aff;background:rgba(60,80,200,0.07);">F.E.A.R. · N.Y.P.D. · S.W.A.T.</div>
+        </div>
+        <div class="svc-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#5c8aff" stroke-width="1.8" stroke-linecap="round">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <path d="M8 21h8M12 17v4M7 8h10M7 12h6"/>
+          </svg>
+        </div>
+        <h3>Formation</h3>
+        <p>Formation opérationnelle des agents du NYPD et des unités SWAT à leurs devoirs légaux, éthiques et tactiques. Nos programmes sont élaborés par des agents fédéraux de terrain pour répondre aux situations les plus exigeantes.</p>
+        <div class="svc-detail">
+          <div class="svc-detail-item">Droits, devoirs et déontologie des FDO</div>
+          <div class="svc-detail-item">Procédures d'intervention et usage de la force</div>
+          <div class="svc-detail-item">Gestion de crise et négociation terrain</div>
+        </div>
+        <span class="svc-badge4">Formation FDO certifiée</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="f-left">F.E.A.R. — FIRST ENCOUNTER ASSAULT RECON // BRANCHE DE NEW YORK</div>
+    <div class="f-right">CRÉDITS . ARNAUD DELAMIAN</div>
+  </footer>
+
+</div>
+
+<script>
+  function show(id){
+    document.querySelectorAll('section').forEach(s=>s.classList.remove('visible'));
+    document.getElementById(id).classList.add('visible');
+    document.querySelectorAll('.nav-links button:not(.btn-rejoindre)').forEach(b=>b.classList.remove('active'));
+    document.getElementById(id==='pres'?'tab1':'tab2').classList.add('active');
+  }
+</script>
+
+</body>
+</html>
